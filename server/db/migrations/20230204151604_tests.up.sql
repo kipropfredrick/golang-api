@@ -1,0 +1,1 @@
+CREATE TABLE "tests" ("id" bigserial PRIMARY KEY,"name" varchar NOT NULL)
