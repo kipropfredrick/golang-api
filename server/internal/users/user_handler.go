@@ -1,16 +1,18 @@
 package users
 
 import (
+	// "fmt"
 	"net/http"
 	"github.com/gin-gonic/gin"
+	"server/internal/models"
 )
 
 type Handler struct {
-	Service
+	models.Service
 }
 
 // create handler function to create
-func NewHandler(s Service) *Handler {
+func NewHandler(s models.Service) *Handler {
 	return &Handler{
 		Service: s,
 	}
@@ -18,21 +20,26 @@ func NewHandler(s Service) *Handler {
 
 // function to cfeate user
 func (h *Handler) NewUserCreate(g *gin.Context) {
-    var u CreateUserRequest
+    var u models.CreateUserRequest
+	
 	if err := g.ShouldBindJSON(&u); err != nil {
 		g.JSON(http.StatusInternalServerError,gin.H{"err":err.Error()})
 		return
 	}
+	// g.JSON(http.StatusAccepted,u);
+	// return;
+	
 	res,err:=h.Service.CreateNewUser(g.Request.Context(),&u)
 	if err != nil {
 		g.JSON(http.StatusInternalServerError,gin.H{"internal server error":err.Error()})
 		return
 	}
-	g.JSON(http.StatusOK,res)
+	// fmt.Println("done",u);
+	g.JSON(http.StatusOK,gin.H{"status":http.StatusOK,"message":"succefuly created","data":res})
 }
 //login handler
 func (h *Handler) LoginUser(g *gin.Context) {
-	var  user LoginUserRequest
+	var  user models.LoginUserRequest
 if err := g.ShouldBindJSON(&user);err != nil {
 	g.JSON(http.StatusBadRequest,gin.H{"internal server error":err.Error()})
 }
@@ -41,8 +48,10 @@ u,err := h.Service.Login(g.Request.Context(),&user)
 if err != nil {
 	g.JSON(http.StatusInternalServerError,gin.H{"error loging in":err.Error()})
 }
-g.SetCookie("jwt",u.accesstoken,3600,"/","localhost",false,true)
-resp :=&LoginUserResponse{
+
+g.SetCookie("jwt",u.Accesstoken,3600,"/","localhost",false,true)
+resp :=&models.LoginUserResponse{
+	Accesstoken: u.Accesstoken,
 	Username: u.Username,
 	ID: u.ID,
 }

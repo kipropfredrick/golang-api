@@ -3,11 +3,13 @@ package db
 import (
 	"database/sql"
 	_"github.com/lib/pq"
+	"github.com/jinzhu/gorm"
 )
 
 //create struct of type database
 
 type Database struct {
+	gorm.Model
 	db *sql.DB
 }
 // host     = "localhost"

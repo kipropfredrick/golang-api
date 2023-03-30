@@ -36,7 +36,7 @@ services:
     networks:
       - default
     ports:
-    - "8090:80"
+    - "8060:80"
 volumes:
   db-data:
   pgadmin-data:

@@ -1,4 +1,4 @@
-package users
+package models
 
 import "context"
 
@@ -22,7 +22,7 @@ type CreateUserResponse struct {
 }
 //login user response struct
 type LoginUserResponse struct {
-	accesstoken string
+	Accesstoken string
 	ID       string  `json:"id"`
 	Username string `json:"username" db:"username"`
 }

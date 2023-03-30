@@ -1,4 +1,4 @@
-package users
+package services
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"server/util"
 	"strconv"
 	"time"
-
+	"server/internal/models"
 	"github.com/golang-jwt/jwt/v4"
 )
 
@@ -16,12 +16,12 @@ const(
 )
 //type struct thataccept repository as arguement
 type UserService struct {
-	Repository
+	models.Repository
 	timeout time.Duration
 }
 
 //function constructor that usersivercie struct as arguement and
-func NewUserService(repository Repository) Service {
+func NewUserService(repository models.Repository) models.Service {
 	// return pointer to user service struct
     return &UserService{
 		repository,
@@ -32,10 +32,12 @@ func NewUserService(repository Repository) Service {
 type MyjwtClaims struct {
 	ID string `json:"id"`
 	Username string `json:"username"`
+	Name string `json:"name"`
+	Email string `json:"email"`
 	jwt.RegisteredClaims
 }
 //function to create user 
-func (s *UserService) CreateNewUser(c context.Context,req *CreateUserRequest)(*CreateUserResponse, error) {
+func (s *UserService) CreateNewUser(c context.Context,req *models.CreateUserRequest)(*models.CreateUserResponse, error) {
 	ctx, cancel := context.WithTimeout(c, s.timeout)
 	defer cancel()
 
@@ -45,7 +47,7 @@ func (s *UserService) CreateNewUser(c context.Context,req *CreateUserRequest)(*C
 		return nil, err
 	}
 
-	u := &User{
+	u := &models.User{
 		Username: req.Username,
 		Email:    req.Email,
 		Password: hashedPassword,
@@ -56,7 +58,7 @@ func (s *UserService) CreateNewUser(c context.Context,req *CreateUserRequest)(*C
 		return nil, err
 	}
 
-	res:=&CreateUserResponse{
+	res:=&models.CreateUserResponse{
 		ID:strconv.Itoa(int(r.ID)),//type cast to string
 		Email: r.Email,
 		Username: req.Username,
@@ -66,23 +68,26 @@ func (s *UserService) CreateNewUser(c context.Context,req *CreateUserRequest)(*C
 
 }
 //login user
-func (s UserService) Login(c context.Context,req *LoginUserRequest)(*LoginUserResponse,error){
+func (s UserService) Login(c context.Context,req *models.LoginUserRequest)(*models.LoginUserResponse,error){
 ctx ,cancel:=context.WithTimeout(c,s.timeout)
 defer cancel()
 u,err :=s.Repository.GetByEmail(ctx,req.Email)
 if err != nil {
-	return &LoginUserResponse{},err
+	return &models.LoginUserResponse{},err
 }
+
 hashedPassword, _ := util.HashPassword(req.Password)
 fmt.Println("u",u,hashedPassword)
 err= util.CheckPassword(req.Password,u.Password)
 if err != nil {
-	return &LoginUserResponse{}, err
+	return &models.LoginUserResponse{}, err
 }
 //generate jwt if password matches the database
   token :=jwt.NewWithClaims(jwt.SigningMethodHS256,MyjwtClaims{
 	ID: strconv.Itoa(int(u.ID)),
 	Username: u.Username,
+	// Name: u.Name,
+	// email: u.Email,
 	RegisteredClaims: jwt.RegisteredClaims{
 		Issuer: strconv.Itoa(int(u.ID)),
 		ExpiresAt: jwt.NewNumericDate(time.Now().Add(24*time.Hour)),
@@ -91,7 +96,7 @@ if err != nil {
   })
   signedstring,err :=token.SignedString([]byte(secret))
   if err != nil {
-	return &LoginUserResponse{}, err
+	return &models.LoginUserResponse{}, err
   }
-  return &LoginUserResponse{accesstoken: signedstring,ID:strconv.Itoa(int(u.ID)),Username: u.Username}, nil
+  return &models.LoginUserResponse{ Accesstoken:signedstring,ID:strconv.Itoa(int(u.ID)),Username: u.Username}, nil
 }
