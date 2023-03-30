@@ -64,5 +64,5 @@ func (h *Handler) Logout(g *gin.Context) {
 }
 func (h *Handler) Home(g *gin.Context) {
 	// g.SetCookie("jwt","",-1,"","",false,false)
-	g.JSON(http.StatusOK,gin.H{"message": "logout successful"})
+	g.JSON(http.StatusOK,gin.H{"message": "endpoint working"})
  }
