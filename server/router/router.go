@@ -26,6 +26,7 @@ func NewUserRoute(
 //set up route function
 func (p PostRoute)Setup(){
    allroutes:=p.handler.Gin.Group("api/user")
+   allroutes.GET("/homeb",p.UserHandler.Home);
    {
 	allroutes.POST("/create",p.UserHandler.NewUserCreate)
 	allroutes.POST("/login/",p.UserHandler.LoginUser)
