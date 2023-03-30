@@ -29,6 +29,6 @@ func main() {
 	// initialize the router and
     // router.InitRouter(userHandler)
 	// router.Start("0.0.0.0:8080")
-	routers.Gin.Run("http://34.219.53.184/")
+	routers.Gin.Run("http://34.219.53.184")
 	fmt.Println("Connecting to database")
 }
