@@ -2,8 +2,9 @@ package db
 
 import (
 	"database/sql"
-	_"github.com/lib/pq"
+
 	"github.com/jinzhu/gorm"
+	_ "github.com/lib/pq"
 )
 
 //create struct of type database
@@ -22,7 +23,7 @@ func NewDatabase() (*Database, error) {
 	 if err != nil {
 		return nil, err
 	 }
-	 //return pointer database struct
+	 //return pointer database struct vhvhg
 	 return &Database{db: db},nil
 }
 //create func to close the db
