@@ -7,7 +7,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-//create struct of type database
+//create struct of type database conection
 
 type Database struct {
 	gorm.Model
