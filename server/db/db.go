@@ -18,7 +18,7 @@ type Database struct {
 // password = "kiprop"
 // dbname   = "mydb"
 func NewDatabase() (*Database, error) {
-	db,err := sql.Open("postgres","postgresql://godbtest:31877101@go-chat.cydlpjqntwzu.us-west-2.rds.amazonaws.com:5432/go-chat?sslmode=disable");
+	db,err := sql.Open("postgres","postgresql://godbtest:31877101@go-chat.cydlpjqntwzu.us-west-2.rds.amazonaws.com:5432/postgres?sslmode=disable");
 	 if err != nil {
 		return nil, err
 	 }
